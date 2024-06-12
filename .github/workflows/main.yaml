@@ -30,3 +30,30 @@ jobs:
     - name: Run tests
       run: |
         pytest app_test.py
+
+  deploy:
+    runs-on: ubuntu
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Create virtual environment
+      run: python -m venv venv
+      source venv/bin/activate
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Deploy to production
+      uses: johnbeynon/render-deploy-action@0.0.8
+      with:
+        service-id: ${{ secrets.UTSID }}
+        api-key: ${{ secrets.UTSIKEY }}

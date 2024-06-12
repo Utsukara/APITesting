@@ -16,10 +16,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
@@ -37,12 +37,27 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: flaskuser
+          POSTGRES_PASSWORD: pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
@@ -51,17 +66,8 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libpq-dev
 
-    - name: Install PostgreSQL
-      run: |
-        sudo apt-get install -y postgresql postgresql-contrib
-
-    - name: Configure PostgreSQL
-      run: |
-        sudo service postgresql start
-        sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
-        sudo -u postgres psql -c "CREATE DATABASE test_db;"
-        sudo -u postgres psql -c "CREATE USER flaskuser WITH PASSWORD 'pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas';"
-        sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO flaskuser;"
+    - name: Wait for PostgreSQL
+      run: sleep 20
 
     - name: Install dependencies
       run: |
@@ -71,8 +77,8 @@ jobs:
     - name: Run tests
       env:
         SQLALCHEMY_DATABASE_URI: postgresql://flaskuser:pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas@localhost/test_db
-        PGUSER: postgres
-        PGPASSWORD: postgres
+        PGUSER: flaskuser
+        PGPASSWORD: pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas
         PYTHONPATH: ${{ github.workspace }}
       run: |
         pytest --maxfail=1 --disable-warnings -v
@@ -83,10 +89,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.12'
 

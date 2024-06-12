@@ -56,7 +56,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Deploy to production
-      uses: johnbeynon/render-deploy-action@0.0.8
+      uses: johnbeynon/render-deploy-action@v0.0.7
       with:
         service-id: ${{ secrets.UTSID }}
         api-key: ${{ secrets.UTSIKEY }}

@@ -70,7 +70,7 @@ jobs:
 
     - name: Run tests
       env:
-        SQLALCHEMY_DATABASE_URI: postgres://flaskuser:pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas@localhost/test_db
+        SQLALCHEMY_DATABASE_URI: postgresql://flaskuser:pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas@localhost/test_db
         PGUSER: postgres
         PGPASSWORD: postgres
         PYTHONPATH: ${{ github.workspace }}

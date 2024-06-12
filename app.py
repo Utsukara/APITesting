@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column,
 
 app = Flask(__name__)
 ma = Marshmallow(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://flaskuser:pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas@dpg-cpkeuc4f7o1s73co03bg-a.oregon-postgres.render.com/dbsum_8den'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://flaskuser:pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas@dpg-cpkeuc4f7o1s73co03bg-a.oregon-postgres.render.com/dbsum_8den'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 class Base(DeclarativeBase):

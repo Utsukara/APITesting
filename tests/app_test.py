@@ -42,10 +42,10 @@ class TestApp(unittest.TestCase):
         response = self.app.get('/sum/result/4')
         data = response.get_json()
         print(f"Test get sums by result=4 -> result: {data}")
-        self.assertEqual(len(data), 2)  # Expecting two results: (1, 3) and (2, 2)
+        self.assertEqual(len(data), 4)  # Expecting four results: (1, 3), (2, 2), (-1, 5), (3, 1)
 
     def test_invalid_get_sums_by_result(self):
-        response = self.app.get('/sum/result/not_a_number')
+        response = self.app.get('/sum/result/invalid_value')
         self.assertEqual(response.status_code, 404)
 
 if __name__ == '__main__':

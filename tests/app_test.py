@@ -1,16 +1,24 @@
 import unittest
-from app import app
+from app import app, db
 from faker import Faker
+from app import Sum
 
 class TestApp(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         self.app.testing = True
+        with app.app_context():
+            db.create_all()  # Create tables
+            self.fake = Faker()
+
+    def tearDown(self):
+        with app.app_context():
+            db.session.remove()
+            db.drop_all()  # Drop tables
 
     def test_sum(self):
-        fake = Faker()
-        num1 = fake.random_number(digits=2)
-        num2 = fake.random_number(digits=2)
+        num1 = self.fake.random_number(digits=2)
+        num2 = self.fake.random_number(digits=2)
         payload = {"num1": num1, "num2": num2}
         response = self.app.post('/sum', json=payload)
         data = response.get_json()

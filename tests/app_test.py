@@ -1,7 +1,6 @@
 import unittest
-from app import app, db
+from app import app, db, Sum
 from faker import Faker
-from app import Sum
 
 class TestApp(unittest.TestCase):
     def setUp(self):

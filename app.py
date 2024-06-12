@@ -2,11 +2,11 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from marshmallow import fields
-from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column, Session
+from sqlalchemy.orm import Session, DeclarativeBase, Mapped, mapped_column
 
 app = Flask(__name__)
 ma = Marshmallow(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://flaskuser:pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas@dpg-cpkeuc4f7o1s73co03bg-a.oregon-postgres.render.com/dbsum_8den'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://flaskuser:pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas@localhost/test_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 class Base(DeclarativeBase):
@@ -23,7 +23,7 @@ class Sum(Base):
 
     def __repr__(self):
         return f'<Sum {self.id}: {self.num1} + {self.num2} = {self.result}>'
-    
+
 class SumSchema(ma.Schema):
     id = fields.Integer()
     num1 = fields.Integer()
@@ -46,6 +46,7 @@ def sum():
 
     return jsonify({'result': result})
 
-with app.app_context():
-    db.drop_all()
-    db.create_all()
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)

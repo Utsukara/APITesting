@@ -51,24 +51,28 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libpq-dev
 
+    - name: Install PostgreSQL
+      run: |
+        sudo apt-get install -y postgresql postgresql-contrib
+
+    - name: Configure PostgreSQL
+      run: |
+        sudo service postgresql start
+        sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
+        sudo -u postgres psql -c "CREATE DATABASE test_db;"
+        sudo -u postgres psql -c "CREATE USER flaskuser WITH PASSWORD 'pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas';"
+        sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO flaskuser;"
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Set up PostgreSQL
-      run: |
-        sudo apt-get install -y postgresql postgresql-contrib
-        sudo service postgresql start
-        psql -c "CREATE DATABASE test_db;" -U postgres
-        psql -c "CREATE USER flaskuser WITH PASSWORD 'pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas';" -U postgres
-        psql -c "GRANT ALL PRIVILEGES ON DATABASE test_db TO flaskuser;" -U postgres
-      env:
-        PGUSER: postgres
-
     - name: Run tests
       env:
         SQLALCHEMY_DATABASE_URI: postgres://flaskuser:pFceLXKQaFV6hJuMiJbWaQ60mHnFWIas@localhost/test_db
+        PGUSER: postgres
+        PGPASSWORD: postgres
         PYTHONPATH: ${{ github.workspace }}
       run: |
         pytest --maxfail=1 --disable-warnings -v

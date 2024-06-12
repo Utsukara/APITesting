@@ -14,12 +14,14 @@ class TestApp(unittest.TestCase):
         payload = {"num1": num1, "num2": num2}
         response = self.app.post('/sum', json=payload)
         data = response.get_json()
+        print(f"Test sum with payload: {payload} -> result: {data['result']}")
         self.assertEqual(data['result'], num1 + num2)
 
     def test_negative_sum(self):
         payload = {"num1": -5, "num2": -10}
         response = self.app.post('/sum', json=payload)
         data = response.get_json()
+        print(f"Test negative sum with payload: {payload} -> result: {data['result']}")
         self.assertEqual(data['result'], -15)
 
 if __name__ == '__main__':

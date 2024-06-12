@@ -30,6 +30,7 @@ class SumSchema(ma.Schema):
     num2 = fields.Integer()
     result = fields.Integer()
 
+sum_schema = SumSchema()
 sums_schema = SumSchema(many=True)
 
 @app.route('/sum', methods=['POST'])
@@ -45,6 +46,12 @@ def sum():
             session.add(sum_entry)
 
     return jsonify({'result': result})
+
+@app.route('/sum/result/<int:result>', methods=['GET'])
+def get_sums_by_result(result):
+    with Session(db.engine) as session:
+        sums = session.query(Sum).filter_by(result=result).all()
+        return jsonify(sums_schema.dump(sums))
 
 if __name__ == '__main__':
     with app.app_context():
